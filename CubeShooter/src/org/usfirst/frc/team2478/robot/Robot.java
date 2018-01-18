@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -29,6 +30,7 @@ public class Robot extends IterativeRobot {
 		leftMotor = new WPI_TalonSRX(Constants.LEFT_MOTOR);
 		rightMotor = new WPI_TalonSRX(Constants.RIGHT_MOTOR);
 		shooterGroup = new SpeedControllerGroup(leftMotor, rightMotor);
+		SmartDashboard.putData("Motor Speed", shooterGroup);
 	}
 
 	@Override
