@@ -55,10 +55,10 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.setDefaultNumber("Percentage Motor Speed", Constants.SHOOTER_SPEED_PERCENT_DEFAULT);
 
 		// set Talon default outputs (0 and 0) output limits (-1 to 1)
-        masterMotor.configNominalOutputForward(0, Constants.PID_TIMEOUT_MS);
-        masterMotor.configNominalOutputReverse(0, Constants.PID_TIMEOUT_MS);
-        masterMotor.configPeakOutputForward(1, Constants.PID_TIMEOUT_MS);
-        masterMotor.configPeakOutputReverse(-1, Constants.PID_TIMEOUT_MS);
+		masterMotor.configNominalOutputForward(0, Constants.PID_TIMEOUT_MS);
+		masterMotor.configNominalOutputReverse(0, Constants.PID_TIMEOUT_MS);
+		masterMotor.configPeakOutputForward(1, Constants.PID_TIMEOUT_MS);
+		masterMotor.configPeakOutputReverse(-1, Constants.PID_TIMEOUT_MS);
 	}
 
 	@Override
@@ -81,10 +81,10 @@ public class Robot extends IterativeRobot {
 
 		// send PID values to master motor
 		masterMotor.config_kF(Constants.PID_ID, p, Constants.PID_TIMEOUT_MS);
-        masterMotor.config_kP(Constants.PID_ID, i, Constants.PID_TIMEOUT_MS);
-        masterMotor.config_kI(Constants.PID_ID, d, Constants.PID_TIMEOUT_MS); 
-        masterMotor.config_kD(Constants.PID_ID, f, Constants.PID_TIMEOUT_MS);
-		
+		masterMotor.config_kP(Constants.PID_ID, i, Constants.PID_TIMEOUT_MS);
+		masterMotor.config_kI(Constants.PID_ID, d, Constants.PID_TIMEOUT_MS); 
+		masterMotor.config_kD(Constants.PID_ID, f, Constants.PID_TIMEOUT_MS);
+
 		// get PID enable button state from dashboard
 		pidEnabled = SmartDashboard.getBoolean("PID enabled?", false);
 		
