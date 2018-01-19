@@ -1,9 +1,9 @@
-package org.usfirst.frc.team2478.robot;
+package src.org.usfirst.frc.team2478.robot;
 
 public class Constants {
 	
-	public static final int MASTER_MOTOR = 1;
-	public static final int SLAVE_MOTOR = 2;
+	public static final int MASTER_MOTOR = 2;
+	public static final int SLAVE_MOTOR = 1;
 
 	public static final int PID_TIMEOUT_MS = 10;
 	public static final int PID_ID = 0;
