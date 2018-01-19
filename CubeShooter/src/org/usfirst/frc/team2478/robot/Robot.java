@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package org.usfirst.frc.team2478.robot;
+package src.org.usfirst.frc.team2478.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -13,20 +13,11 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/**
- * The VM is configured to automatically run this class, and to call the
- * functions corresponding to each mode, as described in the IterativeRobot
- * documentation. If you change the name of this class or the package after
- * creating this project, you must also update the build.properties file in the
- * project.
- */
 public class Robot extends IterativeRobot {
 
 	public WPI_TalonSRX masterMotor, slaveMotor;
-	public Timer pidTimer;
 	public double shooterSpeedPercent, shooterSpeedActual, shooterSpeedTarget = 0;
 	public boolean pidEnabled;
 	public double p, i, d, f;
@@ -80,10 +71,10 @@ public class Robot extends IterativeRobot {
 		f = SmartDashboard.getNumber("F", 0);
 
 		// send PID values to master motor
-		masterMotor.config_kF(Constants.PID_ID, p, Constants.PID_TIMEOUT_MS);
-		masterMotor.config_kP(Constants.PID_ID, i, Constants.PID_TIMEOUT_MS);
-		masterMotor.config_kI(Constants.PID_ID, d, Constants.PID_TIMEOUT_MS); 
-		masterMotor.config_kD(Constants.PID_ID, f, Constants.PID_TIMEOUT_MS);
+		masterMotor.config_kP(Constants.PID_ID, p, Constants.PID_TIMEOUT_MS);
+		masterMotor.config_kI(Constants.PID_ID, i, Constants.PID_TIMEOUT_MS);
+		masterMotor.config_kD(Constants.PID_ID, d, Constants.PID_TIMEOUT_MS); 
+		masterMotor.config_kF(Constants.PID_ID, f, Constants.PID_TIMEOUT_MS);
 
 		// get PID enable button state from dashboard
 		pidEnabled = SmartDashboard.getBoolean("PID enabled?", false);
