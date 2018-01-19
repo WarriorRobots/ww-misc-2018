@@ -38,7 +38,7 @@ public class Robot extends IterativeRobot {
 		slaveMotor = new WPI_TalonSRX(Constants.SLAVE_MOTOR);
 
 		// relative = quadrature, absolute = PWM
-		masterMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative,
+		masterMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,
 												 Constants.PID_ID,
 												 Constants.PID_TIMEOUT_MS);
 		// align sensor to motor direction
