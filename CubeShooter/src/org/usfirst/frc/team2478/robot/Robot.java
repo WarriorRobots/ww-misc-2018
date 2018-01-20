@@ -27,24 +27,16 @@ public class Robot extends IterativeRobot {
 		// initialize both talons, one master and one slave
 		masterMotor = new WPI_TalonSRX(Constants.MASTER_MOTOR);
 		slaveMotor = new WPI_TalonSRX(Constants.SLAVE_MOTOR);
+		masterMotor.setInverted(true);
+		slaveMotor.follow(masterMotor);
 
 		// relative = quadrature, absolute = PWM
-		masterMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative,
-												 Constants.PID_ID,
+		masterMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,
+												 Constants.PROCESS_ID,
 												 Constants.PID_TIMEOUT_MS);
 		// align sensor to motor direction
 		masterMotor.setSensorPhase(true);
 		
-		// put editable fields on dashboard
-		SmartDashboard.putNumber("P", p);
-		SmartDashboard.putNumber("I", i);
-		SmartDashboard.putNumber("D", d);
-		SmartDashboard.putNumber("F", f);
-		SmartDashboard.putNumber("Percentage Motor Speed", shooterSpeedPercent);
-		SmartDashboard.putNumber("PID Motor Target", shooterSpeedTarget);
-		SmartDashboard.putBoolean("PID enabled?", pidEnabled);
-		SmartDashboard.setDefaultNumber("Percentage Motor Speed", Constants.SHOOTER_SPEED_PERCENT_DEFAULT);
-
 		// set Talon default outputs (0 and 0) output limits (-1 to 1)
 		masterMotor.configNominalOutputForward(0, Constants.PID_TIMEOUT_MS);
 		masterMotor.configNominalOutputReverse(0, Constants.PID_TIMEOUT_MS);
@@ -54,6 +46,14 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void teleopInit() {
+		// put editable fields on dashboard
+		SmartDashboard.putNumber("P", p);
+		SmartDashboard.putNumber("I", i);
+		SmartDashboard.putNumber("D", d);
+		SmartDashboard.putNumber("F", f);
+		SmartDashboard.putNumber("Percentage Motor Speed", shooterSpeedPercent);
+		SmartDashboard.putNumber("PID Motor Target", shooterSpeedTarget);
+		SmartDashboard.putBoolean("PID enabled?", pidEnabled);
 	}
 	
 	@Override
@@ -61,7 +61,7 @@ public class Robot extends IterativeRobot {
 		// get shooterSpeed variables from Dashboard fields
 		shooterSpeedTarget = SmartDashboard.getNumber("PID Motor Target", Constants.SHOOTER_SPEED_TARGET_DEFAULT);
 		shooterSpeedPercent = SmartDashboard.getNumber("Percentage Motor Speed", Constants.SHOOTER_SPEED_PERCENT_DEFAULT);
-		shooterSpeedActual = masterMotor.getSelectedSensorVelocity(Constants.PID_ID);
+		shooterSpeedActual = masterMotor.getSelectedSensorVelocity(Constants.PROCESS_ID);
 		SmartDashboard.putNumber("PID Motor Output", shooterSpeedActual);
 		
 		// get PID constants from Dashboard fields
@@ -71,10 +71,10 @@ public class Robot extends IterativeRobot {
 		f = SmartDashboard.getNumber("F", 0);
 
 		// send PID values to master motor
-		masterMotor.config_kP(Constants.PID_ID, p, Constants.PID_TIMEOUT_MS);
-		masterMotor.config_kI(Constants.PID_ID, i, Constants.PID_TIMEOUT_MS);
-		masterMotor.config_kD(Constants.PID_ID, d, Constants.PID_TIMEOUT_MS); 
-		masterMotor.config_kF(Constants.PID_ID, f, Constants.PID_TIMEOUT_MS);
+		masterMotor.config_kP(Constants.PROCESS_ID, p, Constants.PID_TIMEOUT_MS);
+		masterMotor.config_kI(Constants.PROCESS_ID, i, Constants.PID_TIMEOUT_MS);
+		masterMotor.config_kD(Constants.PROCESS_ID, d, Constants.PID_TIMEOUT_MS); 
+		masterMotor.config_kF(Constants.PROCESS_ID, f, Constants.PID_TIMEOUT_MS);
 
 		// get PID enable button state from dashboard
 		pidEnabled = SmartDashboard.getBoolean("PID enabled?", false);

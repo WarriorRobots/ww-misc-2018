@@ -6,7 +6,7 @@ public class Constants {
 	public static final int SLAVE_MOTOR = 1;
 
 	public static final int PID_TIMEOUT_MS = 10;
-	public static final int PID_ID = 0;
+	public static final int PROCESS_ID = 0;
 
 	public static final double SHOOTER_SPEED_TARGET_DEFAULT = 0;
 	public static final double SHOOTER_SPEED_PERCENT_DEFAULT = 0.9;
