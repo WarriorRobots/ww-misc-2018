@@ -7,6 +7,8 @@
 
 package src.org.usfirst.frc.team2478.robot;
 
+import org.usfirst.frc.team2478.robot.Constants;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -18,12 +20,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends IterativeRobot {
 
 	public WPI_TalonSRX masterMotor, slaveMotor;
-	public double shooterSpeedPercent, shooterSpeedActual, shooterSpeedTarget = 0;
 	public boolean pidEnabled;
 	public double p, i, d, f;
 	
 	@Override
 	public void robotInit() {
+		System.out.println("robotInit()");
 		// initialize both talons, one master and one slave
 		masterMotor = new WPI_TalonSRX(Constants.MASTER_MOTOR);
 		slaveMotor = new WPI_TalonSRX(Constants.SLAVE_MOTOR);
@@ -38,31 +40,29 @@ public class Robot extends IterativeRobot {
 		masterMotor.setSensorPhase(true);
 		
 		// set Talon default outputs (0 and 0) output limits (-1 to 1)
-		masterMotor.configNominalOutputForward(0, Constants.PID_TIMEOUT_MS);
-		masterMotor.configNominalOutputReverse(0, Constants.PID_TIMEOUT_MS);
-		masterMotor.configPeakOutputForward(1, Constants.PID_TIMEOUT_MS);
-		masterMotor.configPeakOutputReverse(-1, Constants.PID_TIMEOUT_MS);
+//		masterMotor.configNominalOutputForward(0, Constants.PID_TIMEOUT_MS);
+//		masterMotor.configNominalOutputReverse(0, Constants.PID_TIMEOUT_MS);
+//		masterMotor.configPeakOutputForward(1, Constants.PID_TIMEOUT_MS);
+//		masterMotor.configPeakOutputReverse(-1, Constants.PID_TIMEOUT_MS);
 	}
 
 	@Override
 	public void teleopInit() {
+		System.out.println("teleopInit()");
 		// put editable fields on dashboard
 		SmartDashboard.putNumber("P", p);
 		SmartDashboard.putNumber("I", i);
 		SmartDashboard.putNumber("D", d);
 		SmartDashboard.putNumber("F", f);
-		SmartDashboard.putNumber("Percentage Motor Speed", shooterSpeedPercent);
-		SmartDashboard.putNumber("PID Motor Target", shooterSpeedTarget);
+		SmartDashboard.putNumber("Percentage Motor Speed", 0);
+		SmartDashboard.putNumber("PID Motor Target", 0);
 		SmartDashboard.putBoolean("PID enabled?", pidEnabled);
 	}
 	
 	@Override
 	public void teleopPeriodic() {
-		// get shooterSpeed variables from Dashboard fields
-		shooterSpeedTarget = SmartDashboard.getNumber("PID Motor Target", Constants.SHOOTER_SPEED_TARGET_DEFAULT);
-		shooterSpeedPercent = SmartDashboard.getNumber("Percentage Motor Speed", Constants.SHOOTER_SPEED_PERCENT_DEFAULT);
-		shooterSpeedActual = masterMotor.getSelectedSensorVelocity(Constants.PROCESS_ID);
-		SmartDashboard.putNumber("PID Motor Output", shooterSpeedActual);
+		System.out.println("teleopPeriodic()");
+		SmartDashboard.putNumber("PID Motor Output", masterMotor.getSelectedSensorVelocity(Constants.PROCESS_ID));
 		
 		// get PID constants from Dashboard fields
 		p = SmartDashboard.getNumber("P", 0);
@@ -80,11 +80,11 @@ public class Robot extends IterativeRobot {
 		pidEnabled = SmartDashboard.getBoolean("PID enabled?", false);
 		
 		// run PID if button is true, run percentage output if not
-		if (pidEnabled) {
+		if (pidEnabled==true) {
 			DriverStation.reportError("PID not tuned", false);
-			masterMotor.set(ControlMode.Velocity, shooterSpeedTarget);
+			masterMotor.set(ControlMode.Velocity, SmartDashboard.getNumber("PID Motor Target", Constants.SHOOTER_SPEED_TARGET_DEFAULT));
 		} else {
-			masterMotor.set(ControlMode.PercentOutput, shooterSpeedPercent);
+			masterMotor.set(ControlMode.PercentOutput, SmartDashboard.getNumber("Percentage Motor Speed", Constants.SHOOTER_SPEED_PERCENT_DEFAULT));
 		}
 	}
 	

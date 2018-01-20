@@ -15,10 +15,9 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
-
+	
 	private WPI_TalonSRX masterMotor, slaveMotor;
-	private static final double DEFAULT_MOTOR_SPEED = 0;
-
+	
 	@Override
 	public void robotInit() {
 		masterMotor = new WPI_TalonSRX(2);
@@ -28,22 +27,21 @@ public class Robot extends IterativeRobot {
 		slaveMotor.follow(masterMotor);
 		masterMotor.setSensorPhase(true);
 		masterMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 10);
-		SmartDashboard.putNumber("Motor Speed Percentage", DEFAULT_MOTOR_SPEED);
 	}
-
+	
+	@Override
+	public void teleopInit() {
+		SmartDashboard.putBoolean("PID enabled", true);
+	}
+	
 	@Override
 	public void teleopPeriodic() {
-		masterMotor.set(ControlMode.PercentOutput, SmartDashboard.getNumber("Motor Speed Percentage", DEFAULT_MOTOR_SPEED));
-		SmartDashboard.putNumber("RPM", (masterMotor.getSelectedSensorVelocity(0) / 5) * ((double)600/(double)4096));
-	}
-	
-	@Override
-	public void testInit() {
-		masterMotor.setSelectedSensorPosition(0, 0, 10);
-	}
-	
-	@Override
-	public void testPeriodic() {
-		System.out.println(masterMotor.getSelectedSensorPosition(0));
+		masterMotor.config_kP(0, 0.067, 10);
+		SmartDashboard.putNumber("Velocity", masterMotor.getSelectedSensorVelocity(0));
+		if (SmartDashboard.getBoolean("PID enabled", true)) {
+			masterMotor.set(ControlMode.Velocity, 100000);
+		} else {
+			masterMotor.set(ControlMode.PercentOutput, 1);
+		}
 	}
 }
