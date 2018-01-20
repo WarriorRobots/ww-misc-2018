@@ -9,6 +9,6 @@ public class Constants {
 	public static final int PROCESS_ID = 0;
 
 	public static final double SHOOTER_SPEED_TARGET_DEFAULT = 0;
-	public static final double SHOOTER_SPEED_PERCENT_DEFAULT = 0.9;
+	public static final double SHOOTER_SPEED_PERCENT_DEFAULT = 0;
 	
 }
