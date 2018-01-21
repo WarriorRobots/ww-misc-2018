@@ -25,8 +25,9 @@ public class Robot extends IterativeRobot {
 	private static final String kCustomAuto = "My Auto";
 	private String m_autoSelected;
 	private SendableChooser<String> m_chooser = new SendableChooser<>();
-	private NetworkTable ntable;
 	
+	private NetworkTableInstance defaulttable;
+	private NetworkTable ntable;
 	private double targetOffset_horz;
 	private double targetOffset_vert;
 	private double targetArea;
@@ -38,7 +39,8 @@ public class Robot extends IterativeRobot {
 		m_chooser.addDefault("Default Auto", kDefaultAuto);
 		m_chooser.addObject("My Auto", kCustomAuto);
 		SmartDashboard.putData("Auto choices", m_chooser);
-		ntable = NetworkTable.getTable("limelight");
+		defaulttable = NetworkTableInstance.getDefault();
+		ntable = defaulttable.getTable("limelight");
 	}
 
 	/**
@@ -83,10 +85,10 @@ public class Robot extends IterativeRobot {
 	
 	@Override
 	public void testPeriodic() {
-		targetOffset_horz = table.getNumber("tx", 0);
-		targetOffset_vert = table.getNumber("ty", 0);
-		targetArea = table.getNumber("ta", 0);
-		targetSkew = table.getNumber("ts", 0);
+		targetOffset_horz = ntable.getEntry("tx").getDouble(0);
+		targetOffset_vert = ntable.getEntry("ty").getDouble(0);
+		targetArea = ntable.getEntry("ta").getDouble(0);
+		targetSkew = ntable.getEntry("ts").getDouble(0);
 		
 		System.out.format("Targetoffset Horz: %f\nTargetoffset Vert: %f\nTargetarea: %f\nTargetskew %f",
 				targetOffset_horz,targetOffset_vert,targetArea,targetSkew);
