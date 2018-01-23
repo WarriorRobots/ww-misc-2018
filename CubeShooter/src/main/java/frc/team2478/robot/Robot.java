@@ -37,11 +37,10 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void robotPeriodic() {
-		// puts reset button on dashboard in case it gets broken
-		SmartDashboard.putBoolean("RESET DASHBOARD", false);
 		// updates dashboard if button is true
-		if (SmartDashboard.getBoolean("RESET DASHBOARD", false)) {
-			updateDashboard();
+		if (SmartDashboard.getBoolean("RESET DASHBOARD", false) == true) {
+			this.updateDashboard();
+			System.out.println("helloworld");
 		}
 	}
 	
@@ -61,10 +60,15 @@ public class Robot extends IterativeRobot {
 			DriverStation.reportError("PID not tuned", false);
 			masterMotor.set(ControlMode.Velocity,
 							Constants.RpmToVelocity(SmartDashboard.getNumber("TARGET RPM", 0)));
+			System.out.println(Constants.RpmToVelocity(SmartDashboard.getNumber("TARGET RPM", 0)));
 			masterMotor.set(ControlMode.Velocity, 2500);
 		} else { // runs percentage output if button is false
 			masterMotor.set(ControlMode.PercentOutput, SmartDashboard.getNumber("PERCENTAGE", 0));
 		}
+	}
+	
+	public void disabledInit() {
+		SmartDashboard.putBoolean("RESET DASHBOARD", false);
 	}
 	
 	public void updateDashboard() {
