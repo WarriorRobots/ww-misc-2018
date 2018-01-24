@@ -11,9 +11,6 @@ local.properties
 .loadpath
 .recommenders
 
-# specific to Alex's eclipse install
-ww-robotics-2018/
-
 # Android built artifacts
 *.apk
 *.ap_
@@ -49,3 +46,6 @@ local.properties
 
 #NDK
 obj/
+
+# specific to Alex's eclipse install
+ww-robotics-2018/
