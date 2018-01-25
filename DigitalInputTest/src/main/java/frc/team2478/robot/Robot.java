@@ -9,7 +9,7 @@ public class Robot extends IterativeRobot {
 	
 	@Override
     public void robotInit() {
-		sensor = new DigitalInput(3);
+		sensor = new DigitalInput(4);
 	}
 
     @Override
@@ -24,6 +24,10 @@ public class Robot extends IterativeRobot {
     @Override
     public void testInit() { }
 
+    @Override
+    public void robotPeriodic() {
+    	SmartDashboard.putBoolean("DIO3", sensor.get());
+    }
 
     @Override
     public void disabledPeriodic() { }
@@ -33,7 +37,6 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void teleopPeriodic() {
-    	SmartDashboard.putBoolean("DIO3", sensor.get());
     }
 
     @Override
