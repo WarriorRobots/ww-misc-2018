@@ -26,7 +26,7 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void robotPeriodic() {
-    	SmartDashboard.putBoolean("DIO3", sensor.get());
+    	SmartDashboard.putBoolean("DIO3", !sensor.get());
     }
 
     @Override
