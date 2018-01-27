@@ -12,10 +12,12 @@ public class Constants {
 	public static final double GEARBOX_RATIO = (double)5 / (double)1;
 
 	public static double VelocityToRpm(double vel) {
+		System.out.println(Double.toString(vel) + "native units");
 		return (vel / GEARBOX_RATIO) * RPM_CONVERSION;
 	}
 
 	public static double RpmToVelocity(double rpm) {
+		System.out.println(Double.toString((rpm / RPM_CONVERSION) * GEARBOX_RATIO) + " what the robot sees");
 		return (rpm / RPM_CONVERSION) * GEARBOX_RATIO;
 	}
 	
