@@ -4,14 +4,15 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
 
 	// creates two private member Motor objects
 	private WPI_TalonSRX masterMotor, slaveMotor;
+	private SendableChooser<Double> chooser = new SendableChooser<>();
 	
 	// runs at beginning of program, often BEFORE driver station is connected
 	@Override
@@ -19,6 +20,11 @@ public class Robot extends IterativeRobot {
 		// initializes Master and Slave motors to Talon IDs
 		masterMotor = new WPI_TalonSRX(Constants.MASTER_MOTOR);
 		slaveMotor = new WPI_TalonSRX(Constants.SLAVE_MOTOR);
+		chooser.addDefault("MID", Double.parseDouble("2000"));
+		chooser.addObject("LOW", Double.parseDouble("1735"));
+		chooser.addObject("HIGH", Double.parseDouble("2125"));
+		
+		updateDashboard();
 		
 		// inverts slave motor and links it to the master
 		slaveMotor.setInverted(true);
@@ -40,7 +46,6 @@ public class Robot extends IterativeRobot {
 		// updates dashboard if button is true
 		if (SmartDashboard.getBoolean("RESET DASHBOARD", false) == true) {
 			this.updateDashboard();
-			System.out.println("helloworld");
 		}
 	}
 	
@@ -57,11 +62,10 @@ public class Robot extends IterativeRobot {
 		
 		// enables PID if button is true, defaulting to false
 		if (SmartDashboard.getBoolean("CLOSED LOOP", false)) {
-			DriverStation.reportError("PID not tuned", false);
-			masterMotor.set(ControlMode.Velocity,
-							Constants.RpmToVelocity(SmartDashboard.getNumber("TARGET RPM", 0)));
-			System.out.println(Constants.RpmToVelocity(SmartDashboard.getNumber("TARGET RPM", 0)));
-			masterMotor.set(ControlMode.Velocity, 2500);
+//			masterMotor.set(ControlMode.Velocity,
+//							Constants.RpmToVelocity(SmartDashboard.getNumber("TARGET RPM", 0)));
+			masterMotor.set(ControlMode.Velocity, Constants.RpmToVelocity(chooser.getSelected()));
+//			masterMotor.set(ControlMode.Velocity, chooser.getSelected());
 		} else { // runs percentage output if button is false
 			masterMotor.set(ControlMode.PercentOutput, SmartDashboard.getNumber("PERCENTAGE", 0));
 		}
@@ -73,13 +77,14 @@ public class Robot extends IterativeRobot {
 	
 	public void updateDashboard() {
 		// puts numbers on dashboard
-		SmartDashboard.putNumber("P gain", 0);
+		SmartDashboard.putNumber("P gain", 0.04);
 		SmartDashboard.putNumber("I gain", 0);
-		SmartDashboard.putNumber("D gain", 0);
-		SmartDashboard.putNumber("F gain", 0);
-		SmartDashboard.putNumber("PERCENTAGE", 0);
-		SmartDashboard.putNumber("TARGET RPM", 0);
-		SmartDashboard.putBoolean("CLOSED LOOP", false);
+		SmartDashboard.putNumber("D gain", 1.3);
+		SmartDashboard.putNumber("F gain", 0.00825);
+		SmartDashboard.putNumber("PERCENTAGE", 0.6);
+		SmartDashboard.putNumber("TARGET RPM", 2000);
+		SmartDashboard.putBoolean("CLOSED LOOP", true);
+		SmartDashboard.putData(chooser);
 		SmartDashboard.putBoolean("RESET DASHBOARD", false);
 	}
 }
