@@ -10,35 +10,32 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
 
-	// creates two private member Motor objects
 	private WPI_TalonSRX masterMotor, slaveMotor;
 	private SendableChooser<Double> chooser = new SendableChooser<>();
 	
-	// runs at beginning of program, often BEFORE driver station is connected
 	@Override
 	public void robotInit() {
-		// initializes Master and Slave motors to Talon IDs
 		masterMotor = new WPI_TalonSRX(Constants.MASTER_MOTOR);
 		slaveMotor = new WPI_TalonSRX(Constants.SLAVE_MOTOR);
-		chooser.addDefault("MID", Double.parseDouble("2000"));
-		chooser.addObject("LOW", Double.parseDouble("1735"));
-		chooser.addObject("HIGH", Double.parseDouble("2125"));
-		
-		updateDashboard();
 		
 		// inverts slave motor and links it to the master
 		slaveMotor.setInverted(true);
 		slaveMotor.follow(masterMotor);
 
 		// initializes Quadrature encoder to process ID 0, and with a failure timeout of 10ms
-		masterMotor.configSelectedFeedbackSensor (
+		masterMotor.configSelectedFeedbackSensor(
 			FeedbackDevice.QuadEncoder,
 			Constants.PROCESS_ID,
 			Constants.TIMEOUT_MS
 		);
 
-		// flips Quadrature encoder to return positive when motor runs positively
+		// flips Quadrature encoder direction to match motor
 		masterMotor.setSensorPhase(true);
+		
+		// adds RPM options to Dashboard radio buttons
+		chooser.addDefault("MID", new Double(Constants.RPM_MID));
+		chooser.addObject("LOW", new Double(Constants.RPM_LOW));
+		chooser.addObject("HIGH", new Double(Constants.RPM_HIGH));
 	}
 
 	@Override
@@ -51,38 +48,33 @@ public class Robot extends IterativeRobot {
 	
 	@Override
 	public void teleopPeriodic() {
-		// sends RPM calculation to the dashboard, every loop
 		SmartDashboard.putNumber("RPM", Constants.VelocityToRpm(masterMotor.getSelectedSensorVelocity(0)));
 		
-		// sends PID values to master motor, defaulting to 0 on failure
-		masterMotor.config_kP(Constants.PROCESS_ID, SmartDashboard.getNumber("P gain", 0), Constants.TIMEOUT_MS);
-		masterMotor.config_kI(Constants.PROCESS_ID, SmartDashboard.getNumber("I gain", 0), Constants.TIMEOUT_MS);
-		masterMotor.config_kD(Constants.PROCESS_ID, SmartDashboard.getNumber("D gain", 0), Constants.TIMEOUT_MS); 
-		masterMotor.config_kF(Constants.PROCESS_ID, SmartDashboard.getNumber("F gain", 0), Constants.TIMEOUT_MS);
+		masterMotor.config_kP(Constants.PROCESS_ID, SmartDashboard.getNumber("P gain", Constants.P), Constants.TIMEOUT_MS);
+		masterMotor.config_kI(Constants.PROCESS_ID, SmartDashboard.getNumber("I gain", Constants.I), Constants.TIMEOUT_MS);
+		masterMotor.config_kD(Constants.PROCESS_ID, SmartDashboard.getNumber("D gain", Constants.D), Constants.TIMEOUT_MS); 
+		masterMotor.config_kF(Constants.PROCESS_ID, SmartDashboard.getNumber("F gain", Constants.F), Constants.TIMEOUT_MS);
 		
-		// enables PID if button is true, defaulting to false
+		// PID enabled
 		if (SmartDashboard.getBoolean("CLOSED LOOP", false)) {
-//			masterMotor.set(ControlMode.Velocity,
-//							Constants.RpmToVelocity(SmartDashboard.getNumber("TARGET RPM", 0)));
 			masterMotor.set(ControlMode.Velocity, Constants.RpmToVelocity(chooser.getSelected()));
-//			masterMotor.set(ControlMode.Velocity, chooser.getSelected());
-		} else { // runs percentage output if button is false
+		} else { // percentage output if PID disabled
 			masterMotor.set(ControlMode.PercentOutput, SmartDashboard.getNumber("PERCENTAGE", 0));
 		}
 	}
 	
 	public void disabledInit() {
+		// puts reset button on dashboard if it is missing
 		SmartDashboard.putBoolean("RESET DASHBOARD", false);
 	}
 	
 	public void updateDashboard() {
-		// puts numbers on dashboard
-		SmartDashboard.putNumber("P gain", 0.04);
-		SmartDashboard.putNumber("I gain", 0);
-		SmartDashboard.putNumber("D gain", 1.3);
-		SmartDashboard.putNumber("F gain", 0.00825);
-		SmartDashboard.putNumber("PERCENTAGE", 0.6);
-		SmartDashboard.putNumber("TARGET RPM", 2000);
+		// puts widgets on dashboard
+		SmartDashboard.putNumber("P gain", Constants.P);
+		SmartDashboard.putNumber("I gain", Constants.I);
+		SmartDashboard.putNumber("D gain", Constants.D);
+		SmartDashboard.putNumber("F gain", Constants.F);
+		SmartDashboard.putNumber("PERCENTAGE", Constants.PERCENTAGE_DEFAULT); // equivalent to 2000 RPM
 		SmartDashboard.putBoolean("CLOSED LOOP", true);
 		SmartDashboard.putData(chooser);
 		SmartDashboard.putBoolean("RESET DASHBOARD", false);
