@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 public class Robot extends IterativeRobot {
@@ -55,8 +54,8 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void teleopPeriodic() {
-    	double left = leftJoy.getY();
-    	double right = rightJoy.getY();
+    	double left = -leftJoy.getY();
+    	double right = -rightJoy.getY();
     	drive.tankDrive(left, right, true);
     }
 
