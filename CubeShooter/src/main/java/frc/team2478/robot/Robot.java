@@ -36,6 +36,7 @@ public class Robot extends IterativeRobot {
 		chooser.addDefault("MID", new Double(Constants.RPM_MID));
 		chooser.addObject("LOW", new Double(Constants.RPM_LOW));
 		chooser.addObject("HIGH", new Double(Constants.RPM_HIGH));
+		chooser.addObject("CUSTOM", new Double(-1.0));
 	}
 
 	@Override
@@ -57,7 +58,12 @@ public class Robot extends IterativeRobot {
 		
 		// PID enabled
 		if (SmartDashboard.getBoolean("CLOSED LOOP", false)) {
-			masterMotor.set(ControlMode.Velocity, Constants.RpmToVelocity(chooser.getSelected()));
+			double choice;
+			if (chooser.getSelected() == -1.0) choice = SmartDashboard.getNumber("TARGET RPM", 1000.0);
+			else {
+				choice = chooser.getSelected();
+			}
+			masterMotor.set(ControlMode.Velocity, Constants.RpmToVelocity(choice));
 		} else { // percentage output if PID disabled
 			masterMotor.set(ControlMode.PercentOutput, SmartDashboard.getNumber("PERCENTAGE", 0));
 		}
