@@ -59,8 +59,9 @@ public class Robot extends IterativeRobot {
 		// PID enabled
 		if (SmartDashboard.getBoolean("CLOSED LOOP", false)) {
 			double choice;
-			if (chooser.getSelected() == -1.0) choice = SmartDashboard.getNumber("TARGET RPM", 1000.0);
-			else {
+			if (chooser.getSelected() < 0) {
+				choice = SmartDashboard.getNumber("TARGET RPM", 1000.0);
+			} else {
 				choice = chooser.getSelected();
 			}
 			masterMotor.set(ControlMode.Velocity, Constants.RpmToVelocity(choice));
