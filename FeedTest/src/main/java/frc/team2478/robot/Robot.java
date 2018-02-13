@@ -13,8 +13,8 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void robotInit() {
-        masterMotor = new WPI_TalonSRX(MASTER_ID);
-        slaveMotor = new WPI_TalonSRX(SLAVE_ID);
+        masterMotor = new WPI_TalonSRX(MASTER_ID); // right
+        slaveMotor = new WPI_TalonSRX(SLAVE_ID); // left
         slaveMotor.follow(masterMotor);
     }
 
