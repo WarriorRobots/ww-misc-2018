@@ -1,5 +1,6 @@
 package frc.team2478.robot;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
@@ -7,9 +8,6 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
-    
-	public static final double RPM_CONVERSION = 600.0 / 4096.0;
-	public static final double GEARBOX_RATIO = 5.0 / 1.0;
 	
 	private static final int SHOOTER_MASTER_ID = 5;
 	private static final int SHOOTER_SLAVE_ID = 3;
@@ -32,13 +30,36 @@ public class Robot extends IterativeRobot {
         shooterSlaveMotor.follow(shooterMasterMotor);
         shooterSlaveMotor.setInverted(true);
         shooterMasterMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 10);
+        
+        SmartDashboard.putBoolean("Refresh", true);
+        SmartDashboard.putBoolean("FEED/SHOOTER RESET", false);
     }
 
     @Override
     public void robotPeriodic() {
-        if (SmartDashboard.getBoolean("FEED/SHOOTER RESET", false)) {
-            SmartDashboard.putNumber("SET FEED RPM", 0);
-            SmartDashboard.putNumber("SET SHOOTER RPM", 0);
+    	
+        if (SmartDashboard.getBoolean("Refresh", true)){
+        	
+        	 // The reason for the embeded get statements is to perserve an already existing value
+        	SmartDashboard.putNumber("Shooter P gain", SmartDashboard.getNumber("Shooter P gain", Constants.P));
+        	SmartDashboard.putNumber("Shooter I gain", SmartDashboard.getNumber("Shooter I gain", Constants.I));
+        	SmartDashboard.putNumber("Shooter D gain", SmartDashboard.getNumber("Shooter D gain", Constants.D));
+        	SmartDashboard.putNumber("Shooter F gain", SmartDashboard.getNumber("Shooter F gain", Constants.F));
+        	
+        	SmartDashboard.putBoolean("Closed Loop", true);
+        	SmartDashboard.putBoolean("Refresh", false);
+        	SmartDashboard.putBoolean("FEED/SHOOTER RESET", true);
+        };
+        
+        if (SmartDashboard.getBoolean("FEED/SHOOTER RESET", true)) {
+
+        	SmartDashboard.putNumber("SET FEED %", Constants.FEED_DEFAULT);
+            SmartDashboard.putNumber("SET SHOOTER Velocity", Constants.SHOOTER_DEFAULT);
+            SmartDashboard.putNumber("SET SHOOTER %", Constants.SHOOTER_DEFAULT_RPM);
+            
+        	SmartDashboard.putNumber("CURRENT VELOCITY", 0);
+            SmartDashboard.putNumber("CURRENT RPM", 0);
+            
             SmartDashboard.putBoolean("FEED/SHOOTER RESET", false);
         }
     }
@@ -48,30 +69,33 @@ public class Robot extends IterativeRobot {
     	c = 0;
     	feedMasterMotor.stopMotor();
     	shooterMasterMotor.stopMotor();
-        SmartDashboard.putBoolean("FEED/SHOOTER RESET", false);
+    	SmartDashboard.putNumber("CURRENT VELOCITY", 0);
+        SmartDashboard.putNumber("CURRENT RPM", 0);
     }
 
     @Override
     public void teleopPeriodic() {
-//        feedMasterMotor.set(SmartDashboard.getNumber("SET FEED RPM", 0));
-//        shooterMasterMotor.set(SmartDashboard.getNumber("SET SHOOTER RPM", 0));
-    	shooterMasterMotor.set(0.5);
-    	if (c > 100) {
-    		feedMasterMotor.set(1);
+    	shooterMasterMotor.config_kP(Constants.PROCESS_ID, SmartDashboard.getNumber("Shooter P gain", Constants.P), Constants.TIMEOUT_MS);
+		shooterMasterMotor.config_kI(Constants.PROCESS_ID, SmartDashboard.getNumber("Shooter I gain", Constants.I), Constants.TIMEOUT_MS);
+		shooterMasterMotor.config_kD(Constants.PROCESS_ID, SmartDashboard.getNumber("Shooter D gain", Constants.D), Constants.TIMEOUT_MS); 
+		shooterMasterMotor.config_kF(Constants.PROCESS_ID, SmartDashboard.getNumber("Shooter F gain", Constants.F), Constants.TIMEOUT_MS);
+		
+		double shooterVelo = SmartDashboard.getNumber("SET SHOOTER Velocity", 0);
+		double shooterPerc = SmartDashboard.getNumber("SET SHOOTER %", 0);
+		if (SmartDashboard.getBoolean("Closed Loop", true)) {
+			shooterMasterMotor.set(ControlMode.Velocity, shooterVelo);
+		}
+		else {
+			shooterMasterMotor.set(ControlMode.PercentOutput, shooterPerc);
+		}
+		
+		feedMasterMotor.set(SmartDashboard.getNumber("SET FEED %", 0));
+    	if (c < 100) {
+    		feedMasterMotor.set(0);
     	}
-        SmartDashboard.putNumber("CURRENT VELOCITY", velocityToRpm(shooterMasterMotor.getSelectedSensorVelocity(0)));
+        SmartDashboard.putNumber("CURRENT VELOCITY", shooterMasterMotor.getSelectedSensorVelocity(0));
+        SmartDashboard.putNumber("CURRENT RPM", Constants.velocityToRpm(shooterMasterMotor.getSelectedSensorVelocity(0)));
         c++;
         System.out.println(c);
     }
-
-    //-----------------------//
-    
-    public static double velocityToRpm(double vel) {
-		return (vel / GEARBOX_RATIO) * RPM_CONVERSION;
-	}
-    
-    public static double rpmToVelocity(double rpm) {
-		return (rpm / RPM_CONVERSION) * GEARBOX_RATIO;
-	}
-
 }
