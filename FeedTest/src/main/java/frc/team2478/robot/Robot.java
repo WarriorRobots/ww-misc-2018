@@ -9,15 +9,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
 	
-	private static final int SHOOTER_MASTER_ID = 5;
-	private static final int SHOOTER_SLAVE_ID = 3;
+	private static final int SHOOTER_MASTER_ID = 3;
+	private static final int SHOOTER_SLAVE_ID = 4;
 	private WPI_TalonSRX shooterMasterMotor, shooterSlaveMotor;
 	
     private static final int FEED_MASTER_ID = 1;
     private static final int FEED_SLAVE_ID = 2; 
     private WPI_TalonSRX feedMasterMotor, feedSlaveMotor;
     
-    private static int c = 0;
+    private static int count = 0;
 
     @Override
     public void robotInit() {
@@ -26,9 +26,11 @@ public class Robot extends IterativeRobot {
         feedSlaveMotor.follow(feedMasterMotor);
         
         shooterMasterMotor = new WPI_TalonSRX(SHOOTER_MASTER_ID);
+//        shooterMasterMotor.setInverted(true);
+//        shooterMasterMotor.setSensorPhase(true);
         shooterSlaveMotor = new WPI_TalonSRX(SHOOTER_SLAVE_ID);
         shooterSlaveMotor.follow(shooterMasterMotor);
-        shooterSlaveMotor.setInverted(true);
+//        shooterSlaveMotor.setInverted(false);
         shooterMasterMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 10);
         
         SmartDashboard.putBoolean("Refresh", true);
@@ -53,9 +55,9 @@ public class Robot extends IterativeRobot {
         
         if (SmartDashboard.getBoolean("FEED/SHOOTER RESET", true)) {
 
-        	SmartDashboard.putNumber("SET FEED %", Constants.FEED_DEFAULT);
-            SmartDashboard.putNumber("SET SHOOTER Velocity", Constants.SHOOTER_DEFAULT);
-            SmartDashboard.putNumber("SET SHOOTER %", Constants.SHOOTER_DEFAULT_RPM);
+        	SmartDashboard.putNumber("SET FEED %", Constants.FEED_DEFAULT_PERC);
+            SmartDashboard.putNumber("SET SHOOTER Velocity", Constants.SHOOTER_DEFAULT_RPM);
+            SmartDashboard.putNumber("SET SHOOTER %", Constants.SHOOTER_DEFAULT_PERC);
             
         	SmartDashboard.putNumber("CURRENT VELOCITY", 0);
             SmartDashboard.putNumber("CURRENT RPM", 0);
@@ -66,7 +68,7 @@ public class Robot extends IterativeRobot {
     
     @Override
     public void disabledInit() {
-    	c = 0;
+    	count = 0;
     	feedMasterMotor.stopMotor();
     	shooterMasterMotor.stopMotor();
     	SmartDashboard.putNumber("CURRENT VELOCITY", 0);
@@ -80,22 +82,36 @@ public class Robot extends IterativeRobot {
 		shooterMasterMotor.config_kD(Constants.PROCESS_ID, SmartDashboard.getNumber("Shooter D gain", Constants.D), Constants.TIMEOUT_MS); 
 		shooterMasterMotor.config_kF(Constants.PROCESS_ID, SmartDashboard.getNumber("Shooter F gain", Constants.F), Constants.TIMEOUT_MS);
 		
-		double shooterVelo = SmartDashboard.getNumber("SET SHOOTER Velocity", 0);
-		double shooterPerc = SmartDashboard.getNumber("SET SHOOTER %", 0);
-		if (SmartDashboard.getBoolean("Closed Loop", true)) {
-			shooterMasterMotor.set(ControlMode.Velocity, shooterVelo);
-		}
-		else {
-			shooterMasterMotor.set(ControlMode.PercentOutput, shooterPerc);
-		}
 		
-		feedMasterMotor.set(SmartDashboard.getNumber("SET FEED %", 0));
-    	if (c < 100) {
-    		feedMasterMotor.set(0);
-    	}
+//		if (SmartDashboard.getBoolean("Closed Loop", true)) {
+//			double shooterVeloInClicks = Constants.rpmToVelocity(SmartDashboard.getNumber("SET SHOOTER Velocity", 0));
+//			System.out.println("Input raw: " + Double.toString(shooterVeloInClicks)); //**
+//			shooterMasterMotor.set(ControlMode.Velocity, shooterVeloInClicks);
+//		}
+//		else {
+//			double shooterPerc = SmartDashboard.getNumber("SET SHOOTER %", 0);
+//			shooterMasterMotor.set(ControlMode.PercentOutput, shooterPerc);
+//		}
+		
+//		shooterMasterMotor.set(ControlMode.Velocity, 10000);
+		shooterMasterMotor.set(ControlMode.Velocity, Constants.rpmToVelocity(1500));
+//		shooterMasterMotor.set(ControlMode.Velocity, Constants.rpmToVelocity((double) SmartDashboard.getNumber("SET SHOOTER Velocity", 0)));
+//		System.out.println("conversion @debug" + Double.toString(Constants.rpmToVelocity(1500)));
+		
+//		System.out.println((double) SmartDashboard.getNumber("SET SHOOTER Velocity", 0));
+		System.out.println("Output raw: " + Double.toString(shooterMasterMotor.getSelectedSensorVelocity(0)));
+		
         SmartDashboard.putNumber("CURRENT VELOCITY", shooterMasterMotor.getSelectedSensorVelocity(0));
         SmartDashboard.putNumber("CURRENT RPM", Constants.velocityToRpm(shooterMasterMotor.getSelectedSensorVelocity(0)));
-        c++;
-        System.out.println(c);
+        
+//    	if (count < 100) {
+//    		// Let the shooter get ready and then...
+//    		feedMasterMotor.set(0);
+//    	}
+//    	else {
+//    		// feed the box
+//    		feedMasterMotor.set(SmartDashboard.getNumber("SET FEED %", 0));
+//    	}
+        count++;
     }
 }
