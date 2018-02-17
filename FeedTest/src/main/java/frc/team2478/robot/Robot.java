@@ -94,14 +94,19 @@ public class Robot extends IterativeRobot {
 //		}
 		
 //		shooterMasterMotor.set(ControlMode.Velocity, 10000);
-		shooterMasterMotor.set(ControlMode.Velocity, Constants.rpmToVelocity(1500));
+//		shooterMasterMotor.set(ControlMode.Velocity, Constants.gearboxIn(Constants.rpmToVelocity(1500))); // 1500 rpm is 10,240 clicks/100ms
+		shooterMasterMotor.set(ControlMode.Velocity, Constants.gearboxOut(Constants.rpmToVelocity(375))); // 375 rpm is 2,048 clicks/100ms
 //		shooterMasterMotor.set(ControlMode.Velocity, Constants.rpmToVelocity((double) SmartDashboard.getNumber("SET SHOOTER Velocity", 0)));
 //		System.out.println("conversion @debug" + Double.toString(Constants.rpmToVelocity(1500)));
 		
 //		System.out.println((double) SmartDashboard.getNumber("SET SHOOTER Velocity", 0));
 		System.out.println("Output raw: " + Double.toString(shooterMasterMotor.getSelectedSensorVelocity(0)));
 		
-        SmartDashboard.putNumber("CURRENT VELOCITY", shooterMasterMotor.getSelectedSensorVelocity(0));
+//        SmartDashboard.putNumber("CURRENT VELOCITY", shooterMasterMotor.getSelectedSensorVelocity(0));
+//        SmartDashboard.putNumber("CURRENT RPM", Constants.velocityToRpm(shooterMasterMotor.getSelectedSensorVelocity(0)));
+		
+        SmartDashboard.putNumber("CURRENT VELOCITY", shooterMasterMotor.getSelectedSensorVelocity(0)); // the ecoder is placed outside of the gearbox and then spins
+        // like the shooter
         SmartDashboard.putNumber("CURRENT RPM", Constants.velocityToRpm(shooterMasterMotor.getSelectedSensorVelocity(0)));
         
 //    	if (count < 100) {
