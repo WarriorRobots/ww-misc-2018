@@ -70,6 +70,7 @@ public class Robot extends IterativeRobot {
 		}
 	}
 	
+	@Override
 	public void disabledInit() {
 		// puts reset button on dashboard if it is missing
 		SmartDashboard.putBoolean("RESET DASHBOARD", false);
