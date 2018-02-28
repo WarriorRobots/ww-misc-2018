@@ -4,9 +4,9 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.team2478.robot.ControlHandler;
 import frc.team2478.robot.subsystems.WheelMotor;
 
-public class RunMotorAtPercentage extends Command {
+public class RunMotorWithJoystick extends Command {
 
-	public RunMotorAtPercentage() {
+	public RunMotorWithJoystick() {
 		requires(WheelMotor.getInstance());
 	}
 	
@@ -19,5 +19,4 @@ public class RunMotorAtPercentage extends Command {
 	protected boolean isFinished() {
 		return false;
 	}
-
 }

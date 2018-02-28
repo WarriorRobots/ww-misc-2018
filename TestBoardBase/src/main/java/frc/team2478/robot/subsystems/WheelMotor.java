@@ -4,7 +4,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
-import frc.team2478.robot.commands.RunMotorAtPercentage;
+import frc.team2478.robot.commands.RunMotorWithJoystick;
 
 public class WheelMotor extends Subsystem {
 
@@ -30,15 +30,19 @@ public class WheelMotor extends Subsystem {
 		wheelMotor.stopMotor();
 	}
 	
+	public double getSpeed() {
+		return wheelMotor.get();
+	}
+	
 	@Override
 	protected void initDefaultCommand() {
-		setDefaultCommand(new RunMotorAtPercentage());
+		setDefaultCommand(new RunMotorWithJoystick());
 	}
 
 	@Override
 	public void initSendable(SendableBuilder builder) {
 		builder.setSmartDashboardType("motor");
 		builder.addDoubleProperty("Current Draw (amps)", () -> wheelMotor.getOutputCurrent(), null);
-		builder.addDoubleProperty("Speed (percentage)", () -> wheelMotor.get(), null);
+		builder.addDoubleProperty("Speed (percentage)", () -> getSpeed(), null);
 	}
 }
