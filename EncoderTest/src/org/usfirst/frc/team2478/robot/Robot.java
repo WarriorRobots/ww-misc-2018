@@ -9,21 +9,28 @@ package org.usfirst.frc.team2478.robot;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.networktables.*;
 
 public class Robot extends IterativeRobot {
 
-	Encoder testEncoder1 = new Encoder(0,1);
-	Encoder testEncoder2 = new Encoder(2,3);
-	
-	@Override
+	NetworkTableInstance table;
 	public void robotInit() {
-		testEncoder1.reset();
-		testEncoder2.reset();
+		table = NetworkTableInstance.getDefault();
 	}
 	
-	@Override
-	public void teleopPeriodic() {
-		System.out.println("1: " + Integer.toString(testEncoder1.get()));
-		System.out.println("2: " + Integer.toString(testEncoder2.get()));
+	public void autonomous() {
+
 	}
+	
+	public void operatorControl() {
+		double x = 0;
+		double y = 0;
+		while (isOperatorControl() && isEnabled()) {
+			Timer.delay(0.25);
+			NetworkTableValue.makeDouble(20);
+		}
+	}
+	
+	
 }
