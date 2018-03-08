@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.SimpleRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.networktables;
 
-	 * This function is run when the robot is first started up and should be
 public class EasyNetworkTabeExample extends SimpleRobot{
 	Network table;
 	public void robotInit() {
