@@ -14,6 +14,10 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putData(WheelMotor.getInstance());
 	}
 	
+	@Override
+	public void robotPeriodic() {
+	}
+	
     @Override
     public void teleopPeriodic() {
     	Scheduler.getInstance().run();
