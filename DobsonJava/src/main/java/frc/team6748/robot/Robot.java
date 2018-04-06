@@ -42,17 +42,9 @@ public class Robot extends IterativeRobot {
 	
 	@Override
 	public void teleopPeriodic() {
-		double leftTrigger = xbox.getTriggerAxis(Hand.kLeft);
-		double rightTrigger = xbox.getTriggerAxis(Hand.kRight);
-		double leftJoyX = xbox.getX(Hand.kLeft);
-		
-		if (rightTrigger > 0.05) {
-			drivetrain.arcadeDrive(rightTrigger, leftJoyX);
-		} else if (leftTrigger > 0.05) {
-			drivetrain.arcadeDrive(-leftTrigger, leftJoyX);
-		} else {
-			drivetrain.arcadeDrive(0, leftJoyX);
-		}
+		double leftJoyY = xbox.getY(Hand.kLeft);
+		double rightJoyY = xbox.getY(Hand.kRight);
+		drivetrain.tankDrive(leftJoyY, rightJoyY);
 	}
     
 }
